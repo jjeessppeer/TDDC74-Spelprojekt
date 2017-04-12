@@ -6,12 +6,25 @@
 (define player%
   (class sprite%
     (init-field [onGround #f]
-                [gravityAcc 500])
+                [gravityAcc 500]
+                [sideAcc 200]
+                [maxSpeed 100]
+                )
     
     (define/public (apply-gravity deltaT)
-      (send this accelerate 0 (* gravityAcc deltaT)))
+      (send this acc-y gravityAcc deltaT))
     
-    (define/public (platform-collission? platform);platform collision 
+    (define/public (side-accelerate LD RD deltaT)
+      (when (xor LD RD)
+        (let ([direction (if LD -1 1)])
+          (send this acc-x (* direction sideAcc) deltaT)
+          (when (> (abs (send this get-vx)) maxSpeed)
+          (send this set-vx! (* direction maxSpeed))))
+        ))
+          
+          
+    
+    (define/public (platform-collission? platform deltaT);platform collision 
       (and 
        (> (+ (send this get-x) (send this get-width)) 
           (send platform get-x))
@@ -19,7 +32,7 @@
           (+ (send platform get-x) (send platform get-width)))
        (<= (+ (send this get-y) (send this get-height)) 
            (send platform get-y))
-       (>= (+ (send this get-y) (send this get-height) (send this get-vy))
+       (>= (+ (send this get-y) (send this get-height) (* (send this get-vy) deltaT))
            (send platform get-y))))
       
       

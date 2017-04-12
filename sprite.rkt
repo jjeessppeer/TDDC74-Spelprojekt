@@ -58,9 +58,10 @@
       (set! y (+ y (* vy dt))))
     
     
-    (define/public (accelerate dvx dvy)
-      (set! vx (+ vx dvx))
-      (set! vy (+ vy dvy)))
+    (define/public (acc-x dvx deltaT)
+      (set! vx (+ vx (* dvx deltaT))))
+    (define/public (acc-y dvy deltaT)
+      (set! vy (+ vy (* dvy deltaT))))
     
     
     

@@ -6,7 +6,6 @@
          "player.rkt"
          "input-canvas.rkt")
 
-;;TODO scale funkar inte som den ska.
 
 
 ;---INITIERA SPRITES----
@@ -16,6 +15,9 @@
 (define platform (new platform% [x 70] [y 200] [width 100] [height 10]))
 (send platform load-texture "img.png")
 
+;---GLOBAL VARIABLES---
+(define LEFT_DOWN #f)
+(define RIGHT_DOWN #f)
 
 ;---IMPORTANT FUNCTIONS---
 (define (update-game)
@@ -26,13 +28,17 @@
 
 (define (player-physics)
   (send player apply-gravity 0.016)
+
+  (send player side-accelerate LEFT_DOWN RIGHT_DOWN 0.016)
   
-  (when (send player platform-collission? platform)
-    (send player set-vy! 0)
-    (send player set-y! (- (send platform get-y) (send player get-height))))
+  (if (send player platform-collission? platform 0.016)
+    (begin (send player set-vy! -250)
+           (send player set-y! (- (send platform get-y) (send player get-height)))
+           (send platform load-texture "texture1.png"))
+    (send platform load-texture "img.png"))
     
   (when (> (+ (send player get-height) (send player get-y)) (send canvas get-height))
-    (send player set-vy! 0)
+    (send player set-vy! -250)
     (send player set-y! (- (send canvas get-height) (send player get-height))))
   
   (send player move 0.016)
@@ -57,16 +63,19 @@
                     [parent frame] 
                     
                     [keyboard-handler 
-                       (lambda (key-event) 
-                         (let ([key-code (send key-event get-key-code)])
-                           (when (eq? key-code 'left)
-                             (send player accelerate -10 0)
-                             (send player load-texture "img.png"))
-                           (when (eq? key-code 'right)
-                             (send player accelerate 10 0)
-                             (send player load-texture "texture1.png"))
-                           (when (eq? key-code 'up)
-                             (send player accelerate 0 (- 250)))
+                       (lambda (key-event)
+                         (let ([key-code (send key-event get-key-code)]
+                               [key-release-code (send key-event get-key-release-code)])
+                           (cond [(eq? key-code 'left)
+                                  (set! LEFT_DOWN #t)]
+                                 [(eq? key-code 'right)
+                                  (set! RIGHT_DOWN #t)]
+                                 [(eq? key-release-code 'left)
+                                  (set! LEFT_DOWN #f)]
+                                 [(eq? key-release-code 'right)
+                                  (set! RIGHT_DOWN #f)]
+                                 [(eq? key-code 'up)
+                                  (send player acc-y (- 250) 1)])
                            ))] 
                     
                     [mouse-handler (lambda (x) 1)]))

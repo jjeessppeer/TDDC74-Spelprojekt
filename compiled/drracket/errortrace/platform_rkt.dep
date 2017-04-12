@@ -1,1 +1,1 @@
-("5.3.6" ("00a4b7dab14ef86ee29a7096a064a945aecb22e9" . "1e7782f9f48618228c5344162d3f5339756c4cba") #"/home/jeser991/kurs/tddc74/Projekt/sprite.rkt" (collects #"racket" #"main.rkt") (collects #"racket" #"lang" #"reader.rkt"))
+("5.3.6" ("00a4b7dab14ef86ee29a7096a064a945aecb22e9" . "c64b293ac24e0421ec0e90e09442f418b40734be") #"/home/jeser991/kurs/tddc74/Projekt/sprite.rkt" (collects #"racket" #"main.rkt") (collects #"racket" #"lang" #"reader.rkt"))

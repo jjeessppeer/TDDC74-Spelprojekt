@@ -57,7 +57,6 @@
                     [parent frame] 
                     
                     [keyboard-handler 
-                     (let ([count 0]) 
                        (lambda (key-event) 
                          (let ([key-code (send key-event get-key-code)])
                            (when (eq? key-code 'left)
@@ -68,8 +67,7 @@
                              (send player load-texture "texture1.png"))
                            (when (eq? key-code 'up)
                              (send player accelerate 0 (- 250)))
-                           (printf "Keypress ~v \n" key-code)
-                           (set! count (+ count 1)))))] 
+                           ))] 
                     
                     [mouse-handler (lambda (x) 1)]))
 

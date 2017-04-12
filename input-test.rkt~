@@ -1,0 +1,8 @@
+#lang racket
+(require racket/gui
+         racket/draw
+         "sprite.rkt"
+         "platform.rkt")
+
+(define input-canvas%
+  (class canvas%))

@@ -1,0 +1,53 @@
+#lang racket
+(require racket/gui
+         racket/draw
+         "sprite.rkt"
+         "platform.rkt")
+;https://docs.racket-lang.org/gui/windowing-overview.html?q=gui#%28part._eventspaceinfo%29
+;---Constants---
+(define FRAMERATE (/ 1.0 60.0))
+
+
+(define frame (new frame% 
+                   [label "test"]
+                   [width 300]
+                   [height 300]))
+(define canvas (new canvas% [parent frame]))
+(define dc (send canvas get-dc))
+
+(define next-bitmap (make-object bitmap% 600 600))
+(define bm-dc (make-object bitmap-dc% next-bitmap))
+
+;;border
+(define no-pen (make-object pen% "BLACK" 1 'transparent)) 
+;;fill
+(define blue-brush (make-object brush% "BLUE" 'solid))
+
+
+
+(send frame show #t)
+
+(send dc set-pen no-pen)
+(send dc set-brush blue-brush)
+
+
+(define s (new platform% [x 10.0] [y 10.0]))
+(send s load-image "img.png")
+(send s sprite-accelerate 50.0 50.0)
+(sleep/yield 0.5)
+
+
+
+
+(define (loop lastT)
+  (let ([deltaT (/ (- (current-inexact-milliseconds) lastT) 1000)]
+        [currentT (current-inexact-milliseconds)])
+    (begin 
+      (sleep/yield FRAMERATE)
+      (printf "dt: ~v \n" deltaT)
+      (send dc clear)
+      (send s sprite-draw dc)
+      (send s sprite-move deltaT)
+      (loop currentT))))
+(loop (current-inexact-milliseconds))
+

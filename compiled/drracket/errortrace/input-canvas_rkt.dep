@@ -1,1 +1,0 @@
-("5.3.6" ("525a354a80fccd85e02fa00527c1aea83c89b994" . "2e7c1233768a37cbbebe791bc56609605336c7e0") (collects #"racket" #"draw.rkt") #"/home/jeser991/kurs/tddc74/Projekt/sprite.rkt" #"/home/jeser991/kurs/tddc74/Projekt/platform.rkt" (collects #"racket" #"gui.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"lang" #"reader.rkt"))

@@ -25,6 +25,7 @@
                                             [width 100]
                                             [height 10])))
 
+
 ;---IMPORTANT FUNCTIONS---
 (define (init-game)
   (for ([i nPlatforms])
@@ -49,7 +50,7 @@
     (send player set-vy! -250)
     (send player set-y! (- (send canvas get-height) (send player get-height))))
   
-  (send player move 0.016)
+  (send player move 0.017)
   )
   
 

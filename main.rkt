@@ -50,7 +50,7 @@
     (send player set-vy! -250)
     (send player set-y! (- (send canvas get-height) (send player get-height))))
   
-  (send player move 0.017)
+  (send player move 0.016)
   )
   
 

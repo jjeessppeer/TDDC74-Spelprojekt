@@ -18,13 +18,21 @@
 ;---GLOBAL VARIABLES---
 (define LEFT_DOWN #f)
 (define RIGHT_DOWN #f)
+(define nPlatforms 25)
+(define platforms (for/vector ([i nPlatforms]) (new platform% 
+                                            [x (* i 30)]
+                                            [y (* i 50)]
+                                            [width 100]
+                                            [height 10])))
 
 ;---IMPORTANT FUNCTIONS---
+(define (init-game)
+  (for ([i nPlatforms])
+      (send (vector-ref platforms i) load-texture "img.png")))
+
 (define (update-game)
   (send canvas refresh)
-  (player-physics)
-  )
-
+  (player-physics))
 
 (define (player-physics)
   (send player apply-gravity 0.016)
@@ -50,7 +58,8 @@
   (send ldc clear)
   (send player draw ldc)
   (send platform draw ldc)
-  )
+  (for ([i platforms])
+      (send i draw ldc)))
 
 
 ;---CANVAS SKRÄP---
@@ -83,6 +92,7 @@
 
 
 ;---STARTA SAKER---
+(init-game)
 (send frame show #t)
 (define game-loop (new timer%
                        [notify-callback update-game]))

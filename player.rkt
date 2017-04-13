@@ -7,19 +7,19 @@
   (class sprite%
     (init-field [onGround #f]
                 [gravityAcc 500]
-                [sideAcc 200]
-                [maxSpeed 100]
+                [sideAcc 500]
                 )
     
     (define/public (apply-gravity deltaT)
       (send this acc-y gravityAcc deltaT))
     
+    (define/public (apply-friction deltaT)
+      (send this set-vx! (* (send this get-vx) (expt 0.3 deltaT))))
+    
     (define/public (side-accelerate LD RD deltaT)
       (when (xor LD RD)
         (let ([direction (if LD -1 1)])
-          (send this acc-x (* direction sideAcc) deltaT)
-          (when (> (abs (send this get-vx)) maxSpeed)
-          (send this set-vx! (* direction maxSpeed))))
+          (send this acc-x (* direction sideAcc) deltaT))
         ))
           
           

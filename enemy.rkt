@@ -1,13 +1,14 @@
 #lang racket
+(require "sprite.rkt")
+(provide enemy%)
 
-(define (f)
-  10)
-
-(let ([x 10])
-  f)
-
-
-
+(define enemy%
+  (class sprite%
+    (init-field 
+      )
+    
+    
+  (super-new)))
 
 
 

@@ -61,9 +61,14 @@
   
   
     
-  (when (> (+ (send player get-height) (send player get-y)) (send canvas get-height))
+  (when (> (+ (send player get-height) (send player get-y)) WINDOW_HEIGHT)
     (send player set-vy! -250)
-    (send player set-y! (- (send canvas get-height) (send player get-height))))
+    (send player set-y! (- WINDOW_HEIGHT (send player get-height))))
+
+  (when (< (send player get-x) 0)
+    (send player set-x! WINDOW_WIDTH))
+  (when (> (send player get-x) WINDOW_WIDTH)
+    (send player set-x! 0))
   
   
   (if (and (< (send player get-y) (/ WINDOW_HEIGHT 4))

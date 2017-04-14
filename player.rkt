@@ -5,34 +5,51 @@
 
 (define player%
   (class sprite%
-    (init-field [onGround #f]
-                [gravityAcc 500]
-                [sideAcc 500]
-                )
+    (super-new)
+    (init-field 
+      [onGround #f]
+      [gravityAcc 500]
+      [sideAcc 500]
+      [windowWidth 100]
+      [windowHeight 100])
+                
+    (inherit-field 
+      x y
+      width height
+      vx vy
+      image)
+    (inherit 
+      acc-x acc-y
+      set-vx!)
+    
+    (define/override (draw dc)
+      (send dc draw-bitmap image x y)
+      (send dc draw-bitmap image (+ x windowWidth) y)
+      (send dc draw-bitmap image (- x windowWidth) y))
     
     (define/public (apply-gravity deltaT)
-      (send this acc-y gravityAcc deltaT))
+      (acc-y gravityAcc deltaT))
     
     (define/public (apply-friction deltaT)
-      (send this set-vx! (* (send this get-vx) (expt 0.3 deltaT))))
+      (set-vx! (* vx (expt 0.3 deltaT))))
     
     (define/public (side-accelerate LD RD deltaT)
       (when (xor LD RD)
         (let ([direction (if LD -1 1)])
-          (send this acc-x (* direction sideAcc) deltaT))
+          (acc-x (* direction sideAcc) deltaT))
         ))
           
           
     
     (define/public (platform-collission? platform deltaT);platform collision 
       (and 
-       (> (+ (send this get-x) (send this get-width)) 
+       (> (+ x width) 
           (send platform get-x))
-       (< (send this get-x) 
+       (< x 
           (+ (send platform get-x) (send platform get-width)))
-       (<= (+ (send this get-y) (send this get-height)) 
+       (<= (+ y height) 
            (send platform get-y))
-       (>= (+ (send this get-y) (send this get-height) (* (send this get-vy) deltaT))
+       (>= (+ y height (* vy deltaT))
            (send platform get-y))))
       
       
@@ -43,5 +60,4 @@
     
           
     
-    
-    (super-new)))
+    ))

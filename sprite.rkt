@@ -21,6 +21,7 @@
     (define/public (get-vy) vy)
     (define/public (get-height) height)
     (define/public (get-width) width)
+
     
     (define/public (set-x! xIn) (set! x xIn))
     (define/public (set-y! yIn) (set! y yIn))
@@ -37,6 +38,11 @@
       (set! height hIn)
       (set! scaleY (/ hIn (send image get-height))))
     
+
+      (define/public (copy-position! otherSprite)
+        (set! x (send otherSprite get-x))
+        (set! y (send otherSprite get-y)))
+
     ;Sets the texture of a sprite to the specified image file and updates the scale
     (define/public (load-texture path)
       (send image load-file path 'png #f #t)

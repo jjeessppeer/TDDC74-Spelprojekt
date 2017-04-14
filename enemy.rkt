@@ -1,12 +1,13 @@
 #lang racket
-(require "sprite.rkt")
-(privide platform)
 
-(define platform%
-  (class sprite%
-    (init-field [name "asdf"])
-  
-  (super-new)))
+(define (f)
+  10)
+
+(let ([x 10])
+  f)
+
+
+
 
 
 

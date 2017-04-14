@@ -4,8 +4,7 @@
 
 (define platform%
   (class sprite%
-    (init-field [bounce-proc (lambda (player) (void))]
-                [platformType 0]
+    (init-field [platformType 0]
                 )
     (define/public (get-type) platformType)
     

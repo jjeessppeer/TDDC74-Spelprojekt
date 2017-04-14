@@ -1,9 +1,7 @@
 #lang racket
-(require racket/gui
-         racket/draw
-         "sprite.rkt"
-         "platform.rkt")
-(provide input-canvas%)
+(require racket/gui)
+(provide 
+  input-canvas%)
 
 (define input-canvas%
   (class canvas%
@@ -14,3 +12,4 @@
     (define/override (on-event mouse-event)
       (mouse-handler mouse-event))
     (super-new)))
+

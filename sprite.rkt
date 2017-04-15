@@ -59,6 +59,9 @@
     
     ;Moves the sprite by its specified velocity in pixels/second
     ;dt should be the time since it last moved in seconds
+    (define/public (move dt)
+      (move-x dt)
+      (move-y dt))
     (define/public (move-x dt)
       (set! x (+ x (* vx dt))))
     (define/public (move-y dt)

@@ -2,6 +2,7 @@
 (require racket/gui
          racket/draw
          "sprite.rkt"
+         "enemy.rkt"
          "platform.rkt"
          "player.rkt"
          "input-canvas.rkt")
@@ -12,10 +13,12 @@
 (define WINDOW_WIDTH 500)
 (define WINDOW_HEIGHT 500)
 
+(define HIGHEST_PLATFORM 0.0)
+
 ;---INITIERA SPRITES----
-(define player (new player% [x 10] [y 20] [height 50] [width 50] [windowWidth WINDOW_WIDTH]))
+(define player (new player% [x 10] [y 20] [height 30] [width 30] [windowWidth WINDOW_WIDTH]))
 
-
+(define enemy (new enemy% [x 0] [y 0] [height 50] [width 50]))
 
 
 (define platforms (for/vector ([i 10]) (new platform% 
@@ -28,12 +31,12 @@
 
 ;---IMPORTANT FUNCTIONS---
 (define (init-game)
-
-  (send player load-texture "texture1.png")
+  (send enemy load-texture "textures/enemy.png")
+  (send player load-texture "textures/hero.png")
   (for ([platform platforms])
     (if (= (send platform get-type) 0)
-        (send platform load-texture "img.png")
-        (send platform load-texture "texture1.png"))))
+        (send platform load-texture "textures/img.png")
+        (send platform load-texture "textures/hero.png"))))
 
 (define lastTime (current-milliseconds))
 (define currentFPS 0)
@@ -46,17 +49,24 @@
 
 
 (define (player-physics deltaT)
+  ;---Enemy stuff---
+  (send enemy enemyAI player deltaT)
+  (send enemy move deltaT)
+  ;---Player---
   (send player apply-gravity deltaT)
   (send player apply-friction deltaT)
   (send player side-accelerate LEFT_DOWN RIGHT_DOWN deltaT)
   
+  ;---Platforms---
   (for ([platform platforms])
     (when (send player platform-collission? platform deltaT)
       (send platform bounce player))
     
     (when (> (send platform get-y) WINDOW_HEIGHT)
-      (send platform set-y! -20)
-      (send platform set-x! (random WINDOW_WIDTH))))
+      (send platform set-y! (- HIGHEST_PLATFORM 60))
+      (set! HIGHEST_PLATFORM (send platform get-y))
+      (send platform set-x! (random WINDOW_WIDTH)))
+    )
       
   
   
@@ -73,10 +83,11 @@
   
   (if (and (< (send player get-y) (/ WINDOW_HEIGHT 4))
            (< (send player get-vy) 0))
-      (for ([platform platforms]) (send platform move-by
+      (begin (set! HIGHEST_PLATFORM (+ HIGHEST_PLATFORM (* (send player get-vy) deltaT -1)))
+             (for ([platform platforms]) (send platform move-by
                                         0
                                         (- (send player get-vy))
-                                        deltaT))
+                                        deltaT)))
       (send player move-y deltaT))
   
   (send player move-x deltaT))
@@ -87,7 +98,8 @@
 (define (drawing-proc canvas dc)
   (send dc clear)
   (send player draw dc)
-  (send dc draw-text (number->string currentFPS) 50 50)
+  (send enemy draw dc)
+  (send dc draw-text (number->string HIGHEST_PLATFORM) 50 50)
   (for ([platform platforms])
       (send platform draw dc)))
 

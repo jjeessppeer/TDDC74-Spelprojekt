@@ -10,21 +10,22 @@
 ;---GLOBAL VARIABLES---
 (define LEFT_DOWN #f)
 (define RIGHT_DOWN #f)
-(define WINDOW_WIDTH 500)
-(define WINDOW_HEIGHT 500)
+(define WINDOW_WIDTH (* 9 45))
+(define WINDOW_HEIGHT (* 16 45))
 
 (define HIGHEST_PLATFORM 0.0)
+(define GAME_START_TIME (current-milliseconds))
 
 ;---INITIERA SPRITES----
-(define player (new player% [x 10] [y 20] [height 30] [width 30] [windowWidth WINDOW_WIDTH]))
+(define player (new player% [x 200] [y 200] [height 20] [width 20] [windowWidth WINDOW_WIDTH]))
 
 (define enemy (new enemy% [x 0] [y 0] [height 50] [width 50]))
 
 
-(define platforms (for/vector ([i 10]) (new platform% 
+(define platforms (for/vector ([i 25]) (new platform% 
                                             [x (random WINDOW_WIDTH)]
                                             [y (* i 50)]
-                                            [width 100]
+                                            [width 60]
                                             [height 10]
                                             [platformType (random 2)])))
 
@@ -51,7 +52,9 @@
 (define (player-physics deltaT)
   ;---Enemy stuff---
   (send enemy enemyAI player deltaT)
+  (when (send enemy collission? player deltaT) (send enemy collission-proc player deltaT))
   (send enemy move deltaT)
+  
   ;---Player---
   (send player apply-gravity deltaT)
   (send player apply-friction deltaT)
@@ -63,17 +66,17 @@
       (send platform bounce player))
     
     (when (> (send platform get-y) WINDOW_HEIGHT)
-      (send platform set-y! (- HIGHEST_PLATFORM 60))
+      (send platform set-y! (- HIGHEST_PLATFORM (+ 40 (random 40))))
       (set! HIGHEST_PLATFORM (send platform get-y))
-      (send platform set-x! (random WINDOW_WIDTH)))
+      (send platform set-x! (random (- WINDOW_WIDTH (send platform get-width)))))
     )
       
   
   
     
-  (when (> (+ (send player get-height) (send player get-y)) WINDOW_HEIGHT)
+  (when (> (send player get-y) WINDOW_HEIGHT)
     (send player set-vy! -250)
-    (send player set-y! (- WINDOW_HEIGHT (send player get-height))))
+    (send game-loop stop))
 
   (when (< (send player get-x) 0)
     (send player set-x! WINDOW_WIDTH))
@@ -99,7 +102,7 @@
   (send dc clear)
   (send player draw dc)
   (send enemy draw dc)
-  (send dc draw-text (number->string HIGHEST_PLATFORM) 50 50)
+  (send dc draw-text (number->string (/ (- (current-milliseconds) GAME_START_TIME) 1000.0)) 50 50)
   (for ([platform platforms])
       (send platform draw dc)))
 

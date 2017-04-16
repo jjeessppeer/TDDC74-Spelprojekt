@@ -4,8 +4,8 @@
 
 (define sprite%
   (class object%
-    (init-field x
-                y
+    (init-field [x 0]
+                [y 0]
                 [width 50.0]
                 [height 50.0]
                 [angle 0.0]
@@ -17,6 +17,8 @@
     
     (define/public (get-x) x)
     (define/public (get-y) y)
+    (define/public (get-center-x) (+ x (/ width 2)))
+    (define/public (get-center-y) (+ y (/ height 2)))
     (define/public (get-vx) vx)
     (define/public (get-vy) vy)
     (define/public (get-height) height)

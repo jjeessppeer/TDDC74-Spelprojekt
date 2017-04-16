@@ -15,6 +15,7 @@
 
 (define HIGHEST_PLATFORM 0.0)
 (define GAME_START_TIME (current-milliseconds))
+(define SCORE 0)
 
 ;---INITIERA SPRITES----
 (define player (new player% [x 200] [y 200] [height 20] [width 20] [windowWidth WINDOW_WIDTH]))
@@ -60,11 +61,25 @@
   (send player apply-friction deltaT)
   (send player side-accelerate LEFT_DOWN RIGHT_DOWN deltaT)
   
+  (when (> (send player get-y) WINDOW_HEIGHT)
+    (send player set-vy! -250)
+    (send game-loop stop))
+  
+  (when (< (send player get-x) 0)
+    (send player set-x! WINDOW_WIDTH))
+  (when (> (send player get-x) WINDOW_WIDTH)
+    (send player set-x! 0))
+
+
+  
+
   ;---Platforms---
   (for ([platform platforms])
     (when (send player platform-collission? platform deltaT)
       (send platform bounce player))
     
+    (send platform move deltaT)
+
     (when (> (send platform get-y) WINDOW_HEIGHT)
       (send platform set-y! (- HIGHEST_PLATFORM (+ 40 (random 40))))
       (set! HIGHEST_PLATFORM (send platform get-y))
@@ -73,26 +88,13 @@
       
   
   
-    
-  (when (> (send player get-y) WINDOW_HEIGHT)
-    (send player set-vy! -250)
-    (send game-loop stop))
-
-  (when (< (send player get-x) 0)
-    (send player set-x! WINDOW_WIDTH))
-  (when (> (send player get-x) WINDOW_WIDTH)
-    (send player set-x! 0))
-  
-  
   (if (and (< (send player get-y) (/ WINDOW_HEIGHT 4))
            (< (send player get-vy) 0))
       (begin (set! HIGHEST_PLATFORM (+ HIGHEST_PLATFORM (* (send player get-vy) deltaT -1)))
-             (for ([platform platforms]) (send platform move-by
-                                        0
-                                        (- (send player get-vy))
-                                        deltaT)))
+             (send enemy move-by 0 (- (send player get-vy)) deltaT)
+             (for ([platform platforms]) 
+                (send platform move-by 0 (- (send player get-vy)) deltaT)))
       (send player move-y deltaT))
-  
   (send player move-x deltaT))
 
   

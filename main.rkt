@@ -70,9 +70,6 @@
   (when (> (send player get-x) WINDOW_WIDTH)
     (send player set-x! 0))
 
-
-  
-
   ;---Platforms---
   (for ([platform platforms])
     (when (send player platform-collission? platform deltaT)

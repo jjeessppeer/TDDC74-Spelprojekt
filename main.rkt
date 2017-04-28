@@ -34,7 +34,7 @@
 ;---IMPORTANT FUNCTIONS---
 (define (init-game)
   (send enemy load-texture "textures/enemy.png")
-  (send player load-texture "textures/hero.png")
+  (send player load-texture "textures/bild.png")
   (for ([platform platforms])
     (if (= (send platform get-type) 0)
         (send platform load-texture "textures/img.png")

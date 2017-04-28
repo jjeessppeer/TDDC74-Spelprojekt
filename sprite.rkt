@@ -17,6 +17,8 @@
     
     (define/public (get-x) x)
     (define/public (get-y) y)
+    (define/public (get-right-x) (+ x width))
+    (define/public (get-bottom-y) (+ y height))
     (define/public (get-center-x) (+ x (/ width 2)))
     (define/public (get-center-y) (+ y (/ height 2)))
     (define/public (get-vx) vx)

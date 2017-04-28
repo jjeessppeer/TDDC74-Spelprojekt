@@ -44,33 +44,4 @@
           (acc-x (* direction sideAcc) deltaT))
         ))
           
-          
-    
-    (define/public (platform-collission? platform deltaT)
-      (or (pt-col-extra? platform deltaT 0)
-          (pt-col-extra? platform deltaT windowWidth)
-          (pt-col-extra? platform deltaT (- windowWidth)))
-    )
-
-    (define/private (pt-col-extra? platform deltaT offset)
-      (let ([x (+ x offset)])
-        (and 
-          (> (+ x width)
-            (send platform get-x))
-          (< x 
-            (+ (send platform get-x) (send platform get-width)))
-          (<= (+ y height) 
-              (send platform get-y))
-          (>= (+ y height (* vy deltaT))
-              (send platform get-y)))
-        ))
-        
-      
-      
-      
-    
-    
-    
-          
-    
     ))

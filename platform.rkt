@@ -8,7 +8,26 @@
     (inherit-field x y
                    width height
                    )
+    (inherit
+      get-right-x get-bottom-y)
+
+      
     (define/public (get-type) platformType)
+
+
+    (define/public (collission? player deltaT)
+        (and 
+          (> (send player get-right-x)
+             x)
+          (< (send player get-x) 
+            (get-right-x))
+          (<= (send player get-bottom-y) 
+              y)
+          (>= (+ (send player get-bottom-y) (* (send player get-vy) deltaT))
+              y)
+        ))
+
+
 
 
     (define/public (bounce player)

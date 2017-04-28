@@ -72,7 +72,7 @@
 
   ;---Platforms---
   (for ([platform platforms])
-    (when (send player platform-collission? platform deltaT)
+    (when (send platform collission? player deltaT)
       (send platform bounce player))
     
     (send platform move deltaT)

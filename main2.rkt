@@ -14,7 +14,7 @@
 ;---Initialize sprites----
 (define player (new player% [x 200] [y 200] [height 20] [width 20] [windowWidth WINDOW_WIDTH]))
 
-(define enemies (for/vector ([i 2]) (new enemy% [x 0] [y 0] [height 50] [width 50])))
+(define enemies (for/vector ([i 1]) (new enemy% [x 0] [y 0] [height 50] [width 50])))
 
 
 (define platforms (for/vector ([i 25]) (new platform% 
@@ -28,25 +28,64 @@
 (define frame (new frame% 
                    [label "test"]
                    [width WINDOW_WIDTH]
-                   [height WINDOW_HEIGHT]))
+                   [height WINDOW_HEIGHT]
+                   [alignment '(center top)]))
 
-(define (game-over-proc)
-    (send frame show #f))
+(define (game-over-proc final-score)
+    (send frame delete-child game-engine))
+
+
+(define game-panel (new vertical-panel%
+    [parent frame]
+    [border 10]
+    [alignment '(left bottom)]
+    [spacing 50]
+    ))
 
 (define game-engine (new game-engine%
-    [parent frame]
+    [parent game-panel]
     [player player]
     [enemies enemies]
     [platforms platforms]
     [on-game-over game-over-proc]
     
     [FRAMERATE 60.0]
-    [WINDOW_HEIGHT WINDOW_HEIGHT]
-    [WINDOW_WIDTH WINDOW_WIDTH]
-    
+    [min-width WINDOW_WIDTH]
+    [stretchable-width 0]
+    [min-height (- WINDOW_HEIGHT 50)]
+
+    [CANVAS_HEIGHT (- WINDOW_HEIGHT 50)]
+    [CANVAS_WIDTH WINDOW_WIDTH]
+    ))
+(send game-engine load-sprite-textures)
+
+
+;;---Menu initializations---
+(define game-menu-panel (new horizontal-panel%
+    [parent game-panel]
+    [border 10]
+    [alignment '(left bottom)]
+    [spacing 50]
     ))
 
-(send game-engine load-sprite-textures)
+(define mm-button (new button%
+    [parent game-menu-panel]
+    [label "Main menu"]
+    [callback (lambda (button event)
+        (send game-engine pause-game))]
+    ))
+(define re-button (new button%
+    [parent game-menu-panel]
+    [label "Resume"]
+    [callback (lambda (button event) 
+        (send game-engine resume-game)
+        (send frame add-child game-engine))]
+    ))
+
+;;---Highscore---
+
+
+
 
 (send frame show #t)
 

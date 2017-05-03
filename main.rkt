@@ -111,7 +111,7 @@
                    [label "test"]
                    [width WINDOW_WIDTH]
                    [height WINDOW_HEIGHT]))
-(define canvas (new input-canvas% 
+(define canvas (new input-canvas%
                     [paint-callback drawing-proc]
                     [parent frame] 
                     

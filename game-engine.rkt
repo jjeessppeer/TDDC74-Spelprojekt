@@ -28,12 +28,15 @@
 
         WINDOW_WIDTH
         WINDOW_HEIGHT
+        
+        on-game-over
 
         [dc (send this get-dc)]
         [FRAMERATE 60]
         [LEFT_DOWN #f]
         [RIGHT_DOWN #f]
         [HIGHEST_PLATFORM 0.0]
+        [SCORE 0.0]
         
 
         [game-loop (new timer% [notify-callback update-game-state])]
@@ -86,7 +89,8 @@
         
         (when (> (send player get-y) WINDOW_HEIGHT)
             (send player set-vy! -250)
-            (send game-loop stop))
+            (pause-game)
+            (on-game-over))
         
         (when (< (send player get-x) 0)
             (send player set-x! WINDOW_WIDTH))

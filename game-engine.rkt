@@ -48,8 +48,6 @@
      [just-paused #t]
      )
 
-
-
     (define/override (on-char key-event)
       (let ([key-code (send key-event get-key-code)]
             [key-release-code (send key-event get-key-release-code)])
@@ -62,8 +60,7 @@
               [(eq? key-release-code 'right)
                (set! RIGHT_DOWN #f)]
               [(eq? key-code 'up)
-               (send player acc-y (- 250) 1)])
-        ))
+               (send player acc-y (- 250) 1)])))
 
     ;;Initializes all relevant variables and objects. 
     ;;Should always be called before starting a new game.
@@ -73,18 +70,15 @@
       (set! RIGHT_DOWN #f)
       (set! LEFT_DOWN #f)
       (set! just-paused #t)
-
       (set! player 
         (new player% 
           [x 200] [y 200] 
           [height 20] [width 20] 
           [windowWidth CANVAS_WIDTH]))
-
       (set! enemies (for/vector ([i 3]) 
         (new enemy% 
-          [x (random CANVAS_WIDTH)] [y 0] 
+          [x (random CANVAS_WIDTH)] [y (random (/ CANVAS_HEIGHT 2))] 
           [height 50] [width 50])))
-
       (set! platforms (for/vector ([i 25]) 
         (new platform% 
           [x (random CANVAS_WIDTH)] [y (* i 50)]
@@ -100,13 +94,11 @@
             (send platform load-texture "textures/img.png")
             (send platform load-texture "textures/hero.png"))))
 
-
-    
-
+    ;;Updates the game state based on the time since last update (deltaT)
     (define/private (step-logic deltaT)
       ;---Enemy logic---
       (for ([enemy enemies])
-        (send enemy enemyAI player deltaT)
+        (send enemy enemyAI player)
         (when (send enemy collission? player deltaT) 
             (send enemy collission-proc player deltaT))
         (send enemy move deltaT))

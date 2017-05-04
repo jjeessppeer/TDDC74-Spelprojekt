@@ -1,6 +1,7 @@
 #lang racket
 (require racket/gui
          "game-engine.rkt")
+
 ;---GLOBAL VARIABLES---
 (define WINDOW_WIDTH (* 9 45))
 (define WINDOW_HEIGHT (* 16 45))

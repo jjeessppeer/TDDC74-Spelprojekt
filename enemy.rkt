@@ -15,7 +15,7 @@
       set-vx! set-vy!
       get-center-x get-center-y)
   
-  (define/public (enemyAI player deltaT)
+  (define/public (enemyAI player)
     (set-vx! (/ (- (send player get-x) x) 3))
     (set-vy! (/ (- (send player get-y) y) 3)))
 

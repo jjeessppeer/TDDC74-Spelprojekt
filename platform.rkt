@@ -10,10 +10,8 @@
                    )
     (inherit
       get-right-x get-bottom-y)
-
-      
+ 
     (define/public (get-type) platformType)
-
 
     (define/public (collission? player deltaT)
         (and 
@@ -27,13 +25,14 @@
               y)
         ))
 
-
-
-
     (define/public (bounce player)
+      
       (case platformType
-        [(0) (send player set-vy! -400)]
-        [(1) (send player set-vy! -650)]))
+        [(0) (send player set-vy! -400)]  ;Normal
+        [(1) (send player set-vy! -650)]  ;High 
+        [(2) (send player set-vy! -400)   ;Tilted 
+             (send player acc-x 100 1)]
+        ))
   
     
   (super-new)))

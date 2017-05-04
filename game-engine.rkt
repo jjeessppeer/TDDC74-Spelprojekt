@@ -29,22 +29,21 @@
 
     (inherit refresh)
     (init-field 
-     player
-     enemies
-     platforms
-
      CANVAS_WIDTH
      CANVAS_HEIGHT
         
      on-game-over
 
+     [player #f]
+     [enemies #f]
+     [platforms #f]
+
      [dc (send this get-dc)]
-     [FRAMERATE 60]
+     [FRAMERATE 60.0]
      [LEFT_DOWN #f]
      [RIGHT_DOWN #f]
      [HIGHEST_PLATFORM 0.0]
      [SCORE 0.0]
-        
 
      [game-loop (new timer% [notify-callback update-game-state])]
      [GAME_START_TIME (current-milliseconds)]
@@ -68,6 +67,32 @@
                (send player acc-y (- 250) 1)])
         ))
 
+    ;;Initializes all relevant variables and objects. 
+    ;;Should always be called before starting a new game.
+    (define/public (initialize-game)  
+      (set! HIGHEST_PLATFORM 0.0)
+      (set! SCORE 0.0)
+      (set! RIGHT_DOWN #f)
+      (set! LEFT_DOWN #f)
+      (set! just-paused #t)
+
+      (set! player 
+        (new player% 
+          [x 200] [y 200] 
+          [height 20] [width 20] 
+          [windowWidth CANVAS_WIDTH]))
+
+      (set! enemies (for/vector ([i 1]) 
+        (new enemy% 
+          [x 0] [y 0] 
+          [height 50] [width 50])))   
+
+      (set! platforms (for/vector ([i 25]) 
+        (new platform% 
+          [x (random CANVAS_WIDTH)] [y (* i 50)]
+          [width 60] [height 10]
+          [platformType (random 2)]))))
+
     (define/public (load-sprite-textures)
       (send player load-texture "textures/bild.png")
       (for ([enemy enemies])
@@ -76,6 +101,9 @@
         (if (= (send platform get-type) 0)
             (send platform load-texture "textures/img.png")
             (send platform load-texture "textures/hero.png"))))
+
+
+    
 
     (define/private (step-logic deltaT)
       ;---Enemy stuff---

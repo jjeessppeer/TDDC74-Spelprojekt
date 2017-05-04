@@ -2,11 +2,9 @@
 (require racket/gui)
 (require racket/gui
          racket/draw
-         "sprite.rkt"
          "enemy.rkt"
          "platform.rkt"
-         "player.rkt"
-         "input-canvas.rkt")
+         "player.rkt")
 (provide game-engine%)
 
 (define game-engine%
@@ -82,10 +80,10 @@
           [height 20] [width 20] 
           [windowWidth CANVAS_WIDTH]))
 
-      (set! enemies (for/vector ([i 1]) 
+      (set! enemies (for/vector ([i 3]) 
         (new enemy% 
-          [x 0] [y 0] 
-          [height 50] [width 50])))   
+          [x (random CANVAS_WIDTH)] [y 0] 
+          [height 50] [width 50])))
 
       (set! platforms (for/vector ([i 25]) 
         (new platform% 
@@ -106,22 +104,22 @@
     
 
     (define/private (step-logic deltaT)
-      ;---Enemy stuff---
+      ;---Enemy logic---
       (for ([enemy enemies])
         (send enemy enemyAI player deltaT)
         (when (send enemy collission? player deltaT) 
             (send enemy collission-proc player deltaT))
         (send enemy move deltaT))
         
-      ;---Player---
+      ;---Player logic---
       (send player apply-gravity deltaT)
       (send player apply-friction deltaT)
       (send player side-accelerate LEFT_DOWN RIGHT_DOWN deltaT)
-        
+      
+      ;;When player touches lower edge of screen its game over
       (when (> (send player get-y) CANVAS_HEIGHT)
-        (send player set-vy! -250)
         (pause-game)
-        (on-game-over SCORE))
+        (on-game-over (exact-round SCORE)))
         
       (when (< (send player get-x) 0)
         (send player set-x! CANVAS_WIDTH))
@@ -129,7 +127,7 @@
         (send player set-x! 0))
 
       ;;When the players position is in the upper portion of the screen
-      ;;move all things downwards instead of moving player upwards.
+      ;;move all things downwards, else just move the player
       (if (and (< (send player get-y) (/ CANVAS_HEIGHT 4))
                (< (send player get-vy) 0))
           (begin (set! HIGHEST_PLATFORM (+ HIGHEST_PLATFORM (* (send player get-vy) deltaT -1)))
@@ -141,7 +139,8 @@
           (send player move-y deltaT))
       ;;No special behavior when moving in the x-direction.
       (send player move-x deltaT)
-      ;---Platforms---
+
+      ;---Platform logic---
       (for ([platform platforms])
         (when (send platform collission? player deltaT)
           (send platform bounce player))

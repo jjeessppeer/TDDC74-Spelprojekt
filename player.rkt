@@ -1,6 +1,5 @@
 #lang racket
-(require racket/gui
-         "sprite.rkt")
+(require "sprite.rkt")
 (provide player%)
 
 (define player%

@@ -13,7 +13,8 @@
                 [scaleY 1.0]
                 [vx 0.0]
                 [vy 0.0]
-                [image (make-object bitmap% 10 10)])
+                [image (make-object bitmap% 64 64)])
+    
     
     (define/public (get-x) x)
     (define/public (get-y) y)
@@ -49,7 +50,7 @@
 
     ;Sets the texture of a sprite to the specified image file and updates the scale
     (define/public (load-texture path)
-      (send image load-file path 'png #f #t)
+      (send image load-file path 'png/alpha #f #t)
       (set-width! width)
       (set-height! height))
     

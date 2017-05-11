@@ -78,8 +78,6 @@
 
 
 
-
-
 ;;---GAME---
 (define game-panel (new vertical-panel%
     [parent frame]
@@ -96,7 +94,7 @@
         (send last-score set-label (string-append "Last score: " (number->string final-score)))
         (send frame delete-child game-panel)
         (send frame add-child main-menu-panel))]
-    [FRAMERATE 30.0]
+    [FRAMERATE 60.0]
     [min-width WINDOW_WIDTH]
     [stretchable-width 0]
     [min-height (- WINDOW_HEIGHT 50)]
@@ -110,13 +108,21 @@
     [parent game-panel]
     [border 10]
     [alignment '(left bottom)]
-    [spacing 50]
+    [spacing 10]
     ))
+
+(define menu-button (new button% 
+    [parent game-menu-panel]
+    [label "Main menu"]
+    [callback (lambda (b e)
+        (send game-engine pause-game)
+        (send frame delete-child game-panel)
+        (send frame add-child main-menu-panel))]))
 
 (define pause-button (new button%
     [parent game-menu-panel]
     [label "Pause"]
-    [callback (lambda (button event)
+    [callback (lambda (b e)
         (send game-engine pause-game))]))
 
 (define resume-button (new button%

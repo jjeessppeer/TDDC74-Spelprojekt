@@ -26,23 +26,23 @@
 
     (inherit refresh)
     (init-field 
-     CANVAS_WIDTH
-     CANVAS_HEIGHT
-     on-game-over
-     [FRAMERATE 60.0])
+      CANVAS_WIDTH
+      CANVAS_HEIGHT
+      on-game-over
+      [FRAMERATE 60.0])
     (field
-     [player #f]
-     [enemies #f]
-     [platforms #f]
-     [LEFT_DOWN #f]
-     [RIGHT_DOWN #f]
-     [HIGHEST_PLATFORM 0.0]
-     [SCORE 0.0]
-     [dc (send this get-dc)]
-     [game-loop (new timer% [notify-callback update-game-state])]
-     [GAME_START_TIME (current-milliseconds)]
-     [just-paused #t]
-     [uiHeart (make-object bitmap% "textures/heart.png" 'png/alpha #f #f 0.5)])
+      [player #f]
+      [enemies #f]
+      [platforms #f]
+      [LEFT_DOWN #f]
+      [RIGHT_DOWN #f]
+      [HIGHEST_PLATFORM 0.0]
+      [SCORE 0.0]
+      [dc (send this get-dc)]
+      [game-loop (new timer% [notify-callback update-game-state])]
+      [GAME_START_TIME (current-milliseconds)]
+      [just-paused #t]
+      [uiHeart (make-object bitmap% "textures/heart.png" 'png/alpha #f #f 0.5)])
 
     (define/override (on-char key-event)
       (let ([key-code (send key-event get-key-code)]
@@ -114,7 +114,7 @@
       (when (> (send player get-x) CANVAS_WIDTH)
         (send player set-x! 0))
 
-      ;;When the players position is in the upper portion of the screen
+      ;;When the player-position is in the upper portion of the screen
       ;;move all things downwards, else just move the player
       (if (and (< (send player get-y) (/ CANVAS_HEIGHT 4))
                (< (send player get-vy) 0))

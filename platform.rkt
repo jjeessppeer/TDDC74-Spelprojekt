@@ -14,15 +14,15 @@
     (define/public (get-type) platformType)
 
     (define/public (collission? player deltaT)
-        (and 
-          (> (send player get-right-x)
-             x)
-          (< (send player get-x) 
-            (get-right-x))
-          (<= (send player get-bottom-y) 
-              y)
-          (>= (+ (send player get-bottom-y) (* (send player get-vy) 2 deltaT))
-              y)))
+      (and 
+        (> (send player get-right-x)
+           x)
+        (< (send player get-x) 
+           (get-right-x))
+        (<= (send player get-bottom-y) 
+            y)
+        (>= (+ (send player get-bottom-y) (* (send player get-vy) 2 deltaT))
+            y)))
 
     (define/public (bounce player)
       (case platformType
@@ -32,6 +32,3 @@
              (send player acc-x 100 1)]))
   
   (super-new)))
-
-
-

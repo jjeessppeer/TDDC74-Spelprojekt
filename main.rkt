@@ -9,41 +9,41 @@
 
 ;;Initialize frame which will hold all gui elements
 (define frame (new frame% 
-                   [label "Hoppspel 123"]
-                   [width WINDOW_WIDTH]
-                   [height WINDOW_HEIGHT]
-                   [stretchable-height (+ WINDOW_HEIGHT 20)]
-                   [stretchable-width (+ WINDOW_WIDTH 20)]
-                   [alignment '(center top)]))
+  [label "Hoppspel 123"]
+  [width WINDOW_WIDTH]
+  [height WINDOW_HEIGHT]
+  [stretchable-height (+ WINDOW_HEIGHT 20)]
+  [stretchable-width (+ WINDOW_WIDTH 20)]
+  [alignment '(center top)]))
 
 ;;;---Main menu elements---
 (define main-menu-panel (new vertical-panel%
-    [min-width WINDOW_WIDTH]
-    [min-height WINDOW_HEIGHT]
-    [parent frame]
-    [border 10]
-    [alignment '(center top)]
-    [spacing 10]))
+  [min-width WINDOW_WIDTH]
+  [min-height WINDOW_HEIGHT]
+  [parent frame]
+  [border 10]
+  [alignment '(center top)]
+  [spacing 10]))
 
 (define ng-button (new button%
-    [parent main-menu-panel]
-    [label "New game"]
-    [callback (lambda (b e) ;Initializes a new game and swaps the showed panel
-        (send game-engine initialize-game)
-        (send frame delete-child main-menu-panel)
-        (send frame add-child game-panel)
-        (send game-engine focus)
-        (send game-engine resume-game))]))
+  [parent main-menu-panel]
+  [label "New game"]
+  [callback (lambda (b e) ;Initializes a new game and swaps the showed panel
+    (send game-engine initialize-game)
+    (send frame delete-child main-menu-panel)
+    (send frame add-child game-panel)
+    (send game-engine focus)
+    (send game-engine resume-game))]))
 
 (define highscore-table (new message% ;Displays highscores in menu
-    [parent main-menu-panel]
-    [label "-"]
-    [auto-resize #t]))
+  [parent main-menu-panel]
+  [label "-"]
+  [auto-resize #t]))
 
 (define last-score (new message% ;Displays score from last game
-    [parent main-menu-panel]
-    [label "Last score: -"]
-    [auto-resize #t]))
+  [parent main-menu-panel]
+  [label "Last score: -"]
+  [auto-resize #t]))
 
 ;;---Highscore functions---
 ;;Highscores are showed in the main menu and are saved to a file.
@@ -52,79 +52,78 @@
 ;;Adds score to list of highscores and updates the saved file
 ;;Only save the top 8 scores
 (define (add-highscore score)
-    (set! highscores
-        (sort (cons score highscores) >))
-    (when (> (length highscores) 8)
-        (set! highscores (take highscores 8)))
-    (display-lines-to-file 
-        highscores 
-        "saved-data/highscore.txt"
-        #:exists 'replace))
+  (set! highscores
+    (sort (cons score highscores) >))
+  (when (> (length highscores) 8)
+    (set! highscores (take highscores 8)))
+  (display-lines-to-file 
+    highscores 
+    "saved-data/highscore.txt"
+    #:exists 'replace))
 
 ;;Refresh the highscores shown in main menu
 (define (update-highscore-table)
-    (send highscore-table set-label
-        (string-join 
-            (for/list ([i 8] [score highscores])
-                (string-append (number->string (+ i 1)) 
-                               ". " 
-                               (number->string score)))
-            "\n"
-            #:before-first "Highscores: \n")))
+  (send highscore-table set-label
+    (string-join 
+      (for/list ([i 8] [score highscores])
+        (string-append (number->string (+ i 1)) 
+                       ". " 
+                       (number->string score)))
+      "\n"
+      #:before-first "Highscores: \n")))
     
 
 ;;---GAME---
 (define game-panel (new vertical-panel% ;This panel holds all ingame elements
-    [parent frame]
-    [border 10]
-    [alignment '(left bottom)]
-    [spacing 50]))
+  [parent frame]
+  [border 10]
+  [alignment '(left bottom)]
+  [spacing 50]))
 
 (define game-engine (new game-engine% ;The game itself
-    [parent game-panel]
-    [on-game-over (lambda (final-score) ;Update highcores and swaps panels to show main menu
-        (add-highscore final-score)
-        (update-highscore-table)
-        (send last-score set-label (string-append 
-          "Last score: " 
-          (number->string final-score)))
-        (send frame delete-child game-panel)
-        (send frame add-child main-menu-panel))]
-    [FRAMERATE 60.0]
-    [min-width WINDOW_WIDTH]
-    [stretchable-width 0]
-    [min-height (- WINDOW_HEIGHT 50)]
-
-    [CANVAS_HEIGHT (- WINDOW_HEIGHT 50)]
-    [CANVAS_WIDTH WINDOW_WIDTH]))
+  [parent game-panel]
+  [on-game-over (lambda (final-score) ;Update highcores and swaps panels to show main menu
+    (add-highscore final-score)
+    (update-highscore-table)
+    (send last-score set-label (string-append 
+      "Last score: " 
+      (number->string final-score)))
+    (send frame delete-child game-panel)
+    (send frame add-child main-menu-panel))]
+  [FRAMERATE 60.0]
+  [min-width WINDOW_WIDTH]
+  [stretchable-width 0]
+  [min-height (- WINDOW_HEIGHT 50)]
+  [CANVAS_HEIGHT (- WINDOW_HEIGHT 50)]
+  [CANVAS_WIDTH WINDOW_WIDTH]))
 
 ;;---Ingame menu---
 (define game-menu-panel (new horizontal-panel% ;Small menu show while in game
-    [parent game-panel]
-    [border 10]
-    [alignment '(left bottom)]
-    [spacing 10]))
+  [parent game-panel]
+  [border 10]
+  [alignment '(left bottom)]
+  [spacing 10]))
 
 (define menu-button (new button% 
-    [parent game-menu-panel]
-    [label "Main menu"]
-    [callback (lambda (b e) ;Return to main menu
-        (send game-engine pause-game)
-        (send frame delete-child game-panel)
-        (send frame add-child main-menu-panel))]))
+  [parent game-menu-panel]
+  [label "Main menu"]
+  [callback (lambda (b e) ;Return to main menu
+    (send game-engine pause-game)
+    (send frame delete-child game-panel)
+    (send frame add-child main-menu-panel))]))
 
 (define pause-button (new button%
-    [parent game-menu-panel]
-    [label "Pause"]
-    [callback (lambda (b e)
-        (send game-engine pause-game))]))
+  [parent game-menu-panel]
+  [label "Pause"]
+  [callback (lambda (b e)
+    (send game-engine pause-game))]))
 
 (define resume-button (new button%
-    [parent game-menu-panel]
-    [label "Resume"]
-    [callback (lambda (b e) 
-        (send game-engine resume-game)
-        (send game-engine focus))]))
+  [parent game-menu-panel]
+  [label "Resume"]
+  [callback (lambda (b e) 
+    (send game-engine resume-game)
+    (send game-engine focus))]))
 
 ;;Game should not show up on startup and it therefore removed
 (send frame delete-child game-panel)

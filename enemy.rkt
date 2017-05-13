@@ -28,12 +28,12 @@
 
   (define/public (enemyAI player deltaT)
     (case enemyType
-          [(0) ;Follow player
-            (when (> y -100)
-              (set-vx! (/ (- (send player get-x) x) 2))
-              (set-vy! (/ (- (send player get-y) y) 5)))]
-          [(1) ;Move side to side
-            (set-x! (+ (/ CANVAS_WIDTH 2) (* (/ CANVAS_WIDTH 2) (sin (/ (current-milliseconds) 1000)))))]))
+      [(0) ;Follow player
+        (when (> y -100)
+          (set-vx! (/ (- (send player get-x) x) 2))
+          (set-vy! (/ (- (send player get-y) y) 5)))]
+      [(1) ;Move side to side
+        (set-x! (+ (/ CANVAS_WIDTH 2) (* (/ CANVAS_WIDTH 2) (sin (/ (current-milliseconds) 1000)))))]))
     
   ;;Basic circular collission detection
   (define/public (collission? player deltaT)
@@ -53,6 +53,3 @@
         (send player damage)]))
     
   (super-new)))
-
-
-

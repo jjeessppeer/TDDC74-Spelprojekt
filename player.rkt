@@ -24,13 +24,13 @@
     
     ;;Special draw function for player to draw on both edges of the screen
     (define/override (draw dc)
-          (send dc rotate angle)
-          (send dc scale scaleX scaleY)
-          (send dc draw-bitmap image (/ (+ x windowWidth) scaleX) (/ y scaleY))
-          (send dc draw-bitmap image (/ (- x windowWidth) scaleX) (/ y scaleY))
-          (send dc draw-bitmap image (/ x scaleX) (/ y scaleY))
-          (send dc scale (/ 1 scaleX) (/ 1 scaleY))
-          (send dc rotate (- angle)))
+      (send dc rotate angle)
+      (send dc scale scaleX scaleY)
+      (send dc draw-bitmap image (/ (+ x windowWidth) scaleX) (/ y scaleY))
+      (send dc draw-bitmap image (/ (- x windowWidth) scaleX) (/ y scaleY))
+      (send dc draw-bitmap image (/ x scaleX) (/ y scaleY))
+      (send dc scale (/ 1 scaleX) (/ 1 scaleY))
+      (send dc rotate (- angle)))
 
     (define/public (apply-gravity deltaT)
       (acc-y gravityAcc deltaT))

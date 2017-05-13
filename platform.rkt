@@ -31,7 +31,6 @@
         [(2) (send player set-vy! -400)   ;Tilted 
              (send player acc-x 100 1)]))
   
-    
   (super-new)))
 
 

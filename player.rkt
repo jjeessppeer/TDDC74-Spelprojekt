@@ -4,7 +4,6 @@
 
 (define player%
   (class sprite%
-    (super-new)
     (init-field 
       windowWidth
       windowHeight)
@@ -55,4 +54,4 @@
         (> y windowHeight)))
 
           
-    ))
+    (super-new)))

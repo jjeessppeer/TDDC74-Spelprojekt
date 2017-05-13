@@ -9,8 +9,7 @@
 
 (define game-engine%
   (class canvas%
-    (super-new)
-
+  (super-new)
     ;;Function used by the game-loop timer.
     ;;Updates the gamestate and measures the time between function calls.
     ;;Time is used to ensure game logic runs the same despite frametrate
@@ -66,7 +65,7 @@
       (set! LEFT_DOWN #f)
       (set! just-paused #t)
       
-      ;;Initialize sprites
+      ;;Initialize game objects
       (set! player 
         (new player% 
           [x 200] [y 200] 
@@ -98,8 +97,7 @@
 
     ;;Updates the game state based on the time since the last update
     (define/private (step-logic deltaT)
-      
-        
+
       ;---Player logic---
       (send player apply-gravity deltaT)
       (send player apply-friction deltaT)
@@ -146,8 +144,7 @@
         (when (> (send platform get-y) CANVAS_HEIGHT) ;Move platform above screen
           (send platform set-y! (- HIGHEST_PLATFORM (+ 40 (random 40))))
           (set! HIGHEST_PLATFORM (send platform get-y))
-          (send platform set-x! (random (- CANVAS_WIDTH (send platform get-width))))))
-      )
+          (send platform set-x! (random (- CANVAS_WIDTH (send platform get-width)))))))
         
     (define/override (on-paint)
       (send dc clear)
@@ -156,8 +153,9 @@
         (send enemy draw dc))
       (for ([platform platforms])
         (send platform draw dc))
-      (for ([i (send player get-health)]) (send dc draw-bitmap uiHeart (- CANVAS_WIDTH (* (+ i 1) 40)) 10))
-      (send dc draw-text (number->string (exact-round SCORE)) 50 50))
+      (for ([i (send player get-health)]) 
+        (send dc draw-bitmap uiHeart (- CANVAS_WIDTH (* (+ i 1) 40)) 10))
+      (send dc draw-text (number->string (exact-round SCORE)) 20 10))
     
     (define/public (resume-game)
       (send game-loop start (exact-floor (* (/ 1 FRAMERATE) 1000)) #f))
@@ -165,15 +163,5 @@
     (define/public (pause-game)
       (set! just-paused #t)
       (send game-loop stop))
-    
-    
-    
-    
-    
-    
-    
-    
-          
-    
     
     ))

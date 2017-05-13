@@ -27,26 +27,19 @@
     (define/public (get-height) height)
     (define/public (get-width) width)
 
-    
     (define/public (set-x! xIn) (set! x xIn))
     (define/public (set-y! yIn) (set! y yIn))
     (define/public (set-vx! vxIn) (set! vx vxIn))
     (define/public (set-vy! vyIn) (set! vy vyIn))
     
-    
-    ;Sets the width/height and changes the scale so that the bitmap is drawn
-    ;at the correct size.
+    ;Sets the width/height and changes the scale so that the
+    ;bitmap is drawn at the correct size.
     (define/public (set-width! wIn)
       (set! width wIn)
       (set! scaleX (/ wIn (send image get-width))))
     (define/public (set-height! hIn)
       (set! height hIn)
       (set! scaleY (/ hIn (send image get-height))))
-    
-
-      (define/public (copy-position! otherSprite)
-        (set! x (send otherSprite get-x))
-        (set! y (send otherSprite get-y)))
 
     ;Sets the texture of a sprite to the specified image file and updates the scale
     (define/public (load-texture path)
@@ -76,24 +69,10 @@
       (set! x (+ x (* vxIn dt)))
       (set! y (+ y (* vyIn dt))))
     
-    
+    ;Accelerate by specified value over time dt
     (define/public (acc-x dvx dt)
       (set! vx (+ vx (* dvx dt))))
     (define/public (acc-y dvy dt)
       (set! vy (+ vy (* dvy dt))))
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-          
-    
     
     (super-new)))

@@ -22,7 +22,7 @@
 
   (define/public (respawn) ;Resets enemy above visible area
     (set! enemyType (random 2))
-    (set-y! (- -500 (random 500)))
+    (set-y! (- -500 (random 800)))
     (set-vx! 0)
     (set-vy! 0))
 
@@ -50,8 +50,7 @@
       [(0) ;Knock player sideways
         (send player acc-x (* 600 (sgn (- (send player get-center-x) (get-center-x)))) 1)]
       [(1) ;Damage player
-        (send player damage)])
-      )
+        (send player damage)]))
     
   (super-new)))
 

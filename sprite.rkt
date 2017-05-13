@@ -9,12 +9,12 @@
                 [width 50.0]
                 [height 50.0]
                 [angle 0.0]
-                [scaleX 1.0]
-                [scaleY 1.0]
                 [vx 0.0]
-                [vy 0.0]
-                [image (make-object bitmap% 64 64)])
-    
+                [vy 0.0])
+    (field
+      [image (make-object bitmap% 64 64)]
+      [scaleX 1.0]
+      [scaleY 1.0])
     
     (define/public (get-x) x)
     (define/public (get-y) y)

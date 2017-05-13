@@ -11,14 +11,14 @@
   (class canvas%
     (super-new)
 
-    ;;Measures the time since the last update, this time is used to ensure the 
-    ;;game logic runs the same at any framerate
+    ;;Function used by the game-loop timer.
+    ;;Updates the gamestate and measures the time between function calls.
+    ;;Time is used to ensure game logic runs the same despite frametrate
     (define update-game-state
       (let ( [lastTime (current-milliseconds)] [currentTime (current-milliseconds)] )
         (lambda ()
           (set! currentTime (current-milliseconds))
-          ;; When the game has been paused the time differance should not be used
-          (when just-paused
+          (when just-paused ;When the game has been paused the time differance should not be used
             (set! lastTime currentTime)
             (set! just-paused #f))
           (step-logic (/ (- currentTime lastTime) 1000))
@@ -30,26 +30,20 @@
      CANVAS_WIDTH
      CANVAS_HEIGHT
      on-game-over
-     [FRAMERATE 60.0]
-     )
+     [FRAMERATE 60.0])
     (field
      [player #f]
      [enemies #f]
      [platforms #f]
-
-     [dc (send this get-dc)]
-     
      [LEFT_DOWN #f]
      [RIGHT_DOWN #f]
      [HIGHEST_PLATFORM 0.0]
      [SCORE 0.0]
-
+     [dc (send this get-dc)]
      [game-loop (new timer% [notify-callback update-game-state])]
      [GAME_START_TIME (current-milliseconds)]
      [just-paused #t]
-
-     ;[uiHeart (make-object bitmap% "textures/heart.png" 'png)]
-     )
+     [uiHeart (make-object bitmap% "textures/heart.png" 'png/alpha #f #f 0.5)])
 
     (define/override (on-char key-event)
       (let ([key-code (send key-event get-key-code)]
@@ -61,9 +55,7 @@
               [(eq? key-release-code 'left)
                (set! LEFT_DOWN #f)]
               [(eq? key-release-code 'right)
-               (set! RIGHT_DOWN #f)]
-              [(eq? key-code 'up)
-               (send player acc-y (- 250) 1)])))
+               (set! RIGHT_DOWN #f)])))
 
     ;;Initializes or resets all relevant variables and objects. 
     ;;Should always be called before starting a new game.
@@ -73,7 +65,8 @@
       (set! RIGHT_DOWN #f)
       (set! LEFT_DOWN #f)
       (set! just-paused #t)
-
+      
+      ;;Initialize sprites
       (set! player 
         (new player% 
           [x 200] [y 200] 
@@ -83,33 +76,29 @@
 
       (set! enemies (for/vector ([i 3]) 
         (new enemy% 
-          [x (random CANVAS_WIDTH)] [y (random (/ CANVAS_HEIGHT 2))] 
+          [x (random CANVAS_WIDTH)] [y (- (random 3000))] 
           [CANVAS_WIDTH CANVAS_WIDTH]
-          [height 50] [width 50])))
-          
+          [height 50] [width 50]
+          [enemyType (random 2)])))
+
       (set! platforms (for/vector ([i 25]) 
         (new platform% 
           [x (random CANVAS_WIDTH)] [y (* i 50)]
           [width 60] [height 10]
-          [platformType (random 2)]))))
+          [platformType (random 2)])))
 
-    (define/public (load-sprite-textures)
-      (send player load-texture "textures/bild.png")
+      ;;Load sprite textures
+      (send player load-texture "textures/player.png")
       (for ([enemy enemies])
         (send enemy load-texture "textures/enemy.png"))
       (for ([platform platforms])
         (if (= (send platform get-type) 0)
-            (send platform load-texture "textures/img.png")
-            (send platform load-texture "textures/hero.png"))))
+            (send platform load-texture "textures/platform1.png")
+            (send platform load-texture "textures/platform2.png"))))
 
     ;;Updates the game state based on the time since the last update
     (define/private (step-logic deltaT)
-      ;---Enemy logic---
-      (for ([enemy enemies])
-        (send enemy enemyAI player deltaT)
-        (when (send enemy collission? player deltaT) 
-            (send enemy collission-proc player deltaT))
-        (send enemy move deltaT))
+      
         
       ;---Player logic---
       (send player apply-gravity deltaT)
@@ -121,7 +110,7 @@
         (pause-game)
         (on-game-over (exact-round SCORE)))
         
-
+      ;;When player is outside screen, move it to the other side.
       (when (< (send player get-x) 0)
         (send player set-x! CANVAS_WIDTH))
       (when (> (send player get-x) CANVAS_WIDTH)
@@ -138,24 +127,26 @@
                    (send platform move-by 0 (- (send player get-vy)) deltaT))
                  (set! SCORE (- SCORE (/ (send player get-vy) 100))))
           (send player move-y deltaT))
-      ;;No special behavior when moving in the x-direction.
       (send player move-x deltaT)
+
+      ;---Enemy logic---
+      (for ([enemy enemies])
+        (send enemy enemyAI player deltaT)
+        (send enemy move deltaT)
+        (when (> (send enemy get-y) CANVAS_HEIGHT) 
+          (send enemy respawn))
+        (when (send enemy collission? player deltaT) 
+            (send enemy collission-proc player deltaT)))
 
       ;---Platform logic---
       (for ([platform platforms])
         (when (send platform collission? player deltaT)
           (send platform bounce player))
-            
         (send platform move deltaT)
-
-        (when (> (send platform get-y) CANVAS_HEIGHT)
+        (when (> (send platform get-y) CANVAS_HEIGHT) ;Move platform above screen
           (send platform set-y! (- HIGHEST_PLATFORM (+ 40 (random 40))))
           (set! HIGHEST_PLATFORM (send platform get-y))
-          (send platform set-x! (random (- CANVAS_WIDTH (send platform get-width)))))
-        )
-
-        
-    
+          (send platform set-x! (random (- CANVAS_WIDTH (send platform get-width))))))
       )
         
     (define/override (on-paint)
@@ -165,7 +156,7 @@
         (send enemy draw dc))
       (for ([platform platforms])
         (send platform draw dc))
-      ;(for ([i (send player get-health)]) (send dc draw-bitmap uiHeart))
+      (for ([i (send player get-health)]) (send dc draw-bitmap uiHeart (- CANVAS_WIDTH (* (+ i 1) 40)) 10))
       (send dc draw-text (number->string (exact-round SCORE)) 50 50))
     
     (define/public (resume-game)

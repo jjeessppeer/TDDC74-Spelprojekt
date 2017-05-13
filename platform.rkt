@@ -21,18 +21,15 @@
             (get-right-x))
           (<= (send player get-bottom-y) 
               y)
-          (>= (+ (send player get-bottom-y) (* (send player get-vy) deltaT))
-              y)
-        ))
+          (>= (+ (send player get-bottom-y) (* (send player get-vy) 2 deltaT))
+              y)))
 
     (define/public (bounce player)
-      
       (case platformType
         [(0) (send player set-vy! -400)]  ;Normal
         [(1) (send player set-vy! -650)]  ;High 
         [(2) (send player set-vy! -400)   ;Tilted 
-             (send player acc-x 100 1)]
-        ))
+             (send player acc-x 100 1)]))
   
     
   (super-new)))
